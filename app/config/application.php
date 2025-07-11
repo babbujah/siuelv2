@@ -4,7 +4,7 @@ return [
         'timezone' => 'America/Sao_Paulo',
         'language' => 'pt',
         'application' => 'template',
-        'title' => 'Adianti Template 8.1',
+        'title' => 'SIUEL',
         'theme' => 'adminbs5',
         'seed' => 'odfu6asnodf8as',
         'rest_key' => '',
@@ -57,8 +57,8 @@ return [
         'string' => '#FFC472',
     ],
     'login' => [
-        'logo' => '',
-        'background' => ''
+        'logo' => '../images/brasão 7 gess.png',
+        'background' => '../images/alcateia lobo guara feira de artesanato capa.jpg'
     ],
     'template' => [
         'navbar' => [
