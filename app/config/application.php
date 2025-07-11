@@ -3,8 +3,8 @@ return [
     'general' =>  [
         'timezone' => 'America/Sao_Paulo',
         'language' => 'pt',
-        'application' => 'template',
-        'title' => 'Adianti Template 8.1',
+        'application' => 'siuel',
+        'title' => 'Sistema Integrado de UEL',
         'theme' => 'adminbs5',
         'seed' => 'odfu6asnodf8as',
         'rest_key' => '',
@@ -24,7 +24,7 @@ return [
         'multi_database' => '0',
         'validate_strong_pass' => '1',
         'notification_login' => '0',
-        'welcome_message' => 'Have a great jorney!',
+        'welcome_message' => 'Deixe o mundo um pouco melhor do que encontrou. Lord Baden-Powell',
         'request_log_service' => 'SystemRequestLogService',
         'request_log' => '0',
         'request_log_types' => 'cli,web,rest',
@@ -57,7 +57,7 @@ return [
         'string' => '#FFC472',
     ],
     'login' => [
-        'logo' => '',
+        'logo' => 'app/images/logo nova 7 gess.jpeg',
         'background' => ''
     ],
     'template' => [
@@ -77,7 +77,8 @@ return [
             'use_swal' => '1'
         ],
         'theme' => [
-            'menu_dark_color' => 'rgb(29 45 83)',
+            /*'menu_dark_color' => 'rgb(29 45 83)',*/
+            'menu_dark_color' => '#458712',
             'menu_mode'  => 'dark',
             'main_mode'  => 'light'
         ]
