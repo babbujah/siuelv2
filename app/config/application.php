@@ -3,13 +3,8 @@ return [
     'general' =>  [
         'timezone' => 'America/Sao_Paulo',
         'language' => 'pt',
-<<<<<<< HEAD
         'application' => 'siuel',
         'title' => 'Sistema Integrado de UEL',
-=======
-        'application' => 'template',
-        'title' => 'SIUEL',
->>>>>>> 163f49b1be7bd4d2f8af61ef540171bf9e1f8062
         'theme' => 'adminbs5',
         'seed' => 'odfu6asnodf8as',
         'rest_key' => '',
@@ -62,13 +57,8 @@ return [
         'string' => '#FFC472',
     ],
     'login' => [
-<<<<<<< HEAD
         'logo' => 'app/images/logo nova 7 gess.jpeg',
-        'background' => ''
-=======
-        'logo' => '../images/brasão 7 gess.png',
         'background' => '../images/alcateia lobo guara feira de artesanato capa.jpg'
->>>>>>> 163f49b1be7bd4d2f8af61ef540171bf9e1f8062
     ],
     'template' => [
         'navbar' => [
