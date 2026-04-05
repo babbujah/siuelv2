@@ -21,6 +21,8 @@ class Pessoa extends TRecord{
         parent::__construct($id, $callObjectLoad);
 
         parent::addAttribute('nome');
+        parent::addAttribute('data_nascimento');
+        parent::addAttribute('genero');
         parent::addAttribute('data_criacao');
         parent::addAttribute('data_modificacao');
     }
