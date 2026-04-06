@@ -12,7 +12,7 @@ class PessoaTraitForm extends TPage{
 
     public function __construct(){
         parent::__construct();
-        parent::add( new TLabel('Teste') );
+        //parent::add( new TLabel('Teste') );
 
         $this->setDatabase('permission');
         $this->setActiveRecord('Pessoa');
@@ -38,7 +38,14 @@ class PessoaTraitForm extends TPage{
         $this->form->addAction( 'Salvar', new TAction([$this, 'onSave']), 'fa:save green' );
         $this->form->addActionLink( 'Limpar', new TAction([$this, 'onClear']), 'fa:eraser red' );
 
-        parent::add($this->form);
+        // vertical box container
+        $container = new TVBox;
+        $container->style = 'width: 100%';
+        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add($this->form);
+        //$container->add($panel);
+        
+        parent::add($container);
 
     }
 }

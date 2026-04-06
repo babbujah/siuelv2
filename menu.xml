@@ -105,7 +105,8 @@
         <menu>
             <menuitem label='Pessoa'>
                 <icon>fa:user fa-fw</icon>
-                <action>PessoaTraitForm</action>
+                <action>PessoaForm</action>
+                <!--<action>PessoaTraitForm</action>-->
             </menuitem>
             <!--<menuitem label='Common page 2'>
                 <icon></icon>

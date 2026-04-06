@@ -11,10 +11,8 @@ class Contato extends TRecord{
     const PRIMARYKEY = 'contato_id';
     const IDPOLICY = 'serial';
 
-    const CREATEDAT = 'data_criacao';
-    const UPDATEDAT = 'data_modificacao';
-
     private $pessoa;
+    private $contatos;
 
     /**
      * Constructor method
@@ -28,9 +26,9 @@ class Contato extends TRecord{
     }
 
     /**
-     * Get Pessoa method
-     * 
-     * @return pessoa
+     * Method get_pessoa
+     * Sample of usage: $contato->pessoa->attribute;
+     * @returns Pessoa instance
      */
     public function get_pessoa(){
         if( empty($this->pessoa) ){
@@ -42,13 +40,15 @@ class Contato extends TRecord{
     }
 
     /**
-     * Set Pessoa method
-     * 
-     * @param $pessoa Pessoa
+     * Method set_pessoa
+     * Sample of usage: $contato->pessoa = $p;
+     * @param $p Instance of Pessoa
      */
-    public function set_pessoa( $pessoa ){
-        $this->pessoa = $pessoa;
+    public function set_pessoa( Pessoa $p ){
+        $this->pessoa = $p;
     }
+
+
 
 
 }

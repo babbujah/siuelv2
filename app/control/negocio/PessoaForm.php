@@ -6,43 +6,68 @@
  * @author     brunosilva
  */
 class PessoaForm extends TPage{
-    private $form;
+    private $formPessoal;
+    private $formContato;
 
     public function __construct(){
         parent::__construct();
         
-        $this->form = new BootstrapFormBuilder();
-        $this->form->setFormTitle('Pessoa');
-        //$this->form->setPessoaValidation(true);
+        $this->formPessoal = new BootstrapFormBuilder('form_pessoal');
+        $this->formPessoal->setFormTitle('Cadastro de Pessoa');
+        $this->formPessoal->setClientValidation(true);
 
-        $id = new TEntry('pessoa_id');        
+        $idPessoa = new TEntry('pessoa_id');
+        $idPessoa->setSize('100%');
+        $idPessoa->setEditable(FALSE);
+
         $nome = new TEntry('nome');
-        $dataNascimento = new TEntry('data_nascimento');
-        $genero = new TEntry('genero');
-        $id->setEditable(FALSE);
+        $nome->setSize('100%');
 
-        $this->form->addFields([new TLabel('Id')], [$id]);
-        $this->form->addFields([new TLabel('Nome')], [$nome]);
-        $this->form->addFields([new TLabel('Data de Nascimento')], [$dataNascimento]);
-        $this->form->addFields([new TLabel('Gênero')], [$genero]);
+        $dataNascimento = new TDate('dt_nascimento');
+        $dataNascimento->setMask('dd/mm/yyyy');
+        $dataNascimento->setDatabaseMask('yyyy-mm-dd');
+        $dataNascimento->setSize('100%');
+        $dataNascimento->setValue('Y-m-d');
+
+        $genero = new TRadioGroup('genero');
+        //$opcoes = ['M' => 'Masculino', 'F' => 'Feminino'];
+        $genero->addItems(['M' => 'Masculino', 'F' => 'Feminino']);
+        $genero->setLayout('horizontal');
+        //$genero->setUseButton();
+        $genero->setValue('M');
+
+        $idEndereco = new THidden('endereco');
+
+
+
+        $this->formPessoal->addFields([new TLabel('id')], [$idPessoa]);
+        $this->formPessoal->addFields([new TLabel('Nome')], [$nome]);
+        $this->formPessoal->addFields([new TLabel('Data de Nascimento')], [$dataNascimento]);
+        $this->formPessoal->addFields([new TLabel('Gênero')], [$genero]);
 
         $nome->addValidation('Nome', new TRequiredValidator);
 
-        $this->form->addAction( 'Salvar', new TAction([$this, 'onSave']), 'fa:save green' );
-        $this->form->addActionLink( 'Limpar', new TAction([$this, 'onClear']), 'fa:eraser red' );
+        if( !empty($idPessoa) ){
+            
+        
+            //$this->formEndereco
+
+        }
+
+        $this->formPessoal->addAction( 'Salvar', new TAction([$this, 'onSave']), 'fa:save green' );
+        $this->formPessoal->addActionLink( 'Limpar', new TAction([$this, 'onClear']), 'fa:eraser red' );
 
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $container->add($this->form);
-        //$container->add($panel);
+        $container->add($this->formPessoal);
         
         parent::add($container);
 
     }
 
-    public function onClear(){
+    public function onClear( $param ){
         $this->form->clear(true);
     }
 
