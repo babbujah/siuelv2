@@ -58,7 +58,7 @@ return [
     ],
     'login' => [
         'logo' => 'app/images/logo nova 7 gess.jpeg',
-        'background' => '../images/alcateia lobo guara feira de artesanato capa.jpg'
+        'background' => 'app/images/alcateia lobo guara feira de artesanato capa.jpg'
     ],
     'template' => [
         'navbar' => [
