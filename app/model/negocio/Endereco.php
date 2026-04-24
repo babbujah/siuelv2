@@ -14,8 +14,6 @@ class Endereco extends TRecord{
     const CREATEDAT = 'data_criacao';
     const UPDATEDAT = 'data_modificacao';
 
-    private $pessoa;
-
     /**
      * Constructor method
      **/
@@ -26,33 +24,10 @@ class Endereco extends TRecord{
         parent::addAttribute('numero');
         parent::addAttribute('bairro');
         parent::addAttribute('complemento');
+        parent::addAttribute('cidade');
         parent::addAttribute('cep');
-        parent::addAttribute('pessoa_id');
+        parent::addAttribute('data_criacao');
+        parent::addAttribute('data_modificacao');
     }
-
-    /**
-     * Get Pessoa method
-     * 
-     * @return pessoa
-     */
-    public function get_pessoa(){
-        if( empty($this->pessoa) ){
-            $this->pessoa = new Pessoa($this->pessoa_id);
-
-        }
-
-        return $this->pessoa;
-
-    }
-
-    /**
-     * Set Pessoa method
-     * 
-     * @param $pessoa Pessoa
-     */
-    public function set_pessoa( $pessoa ){
-        $this->pessoa = $pessoa;
-    }
-
 }
 ?>
