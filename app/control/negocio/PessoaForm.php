@@ -25,7 +25,7 @@ class PessoaForm extends TPage{
         $nome->placeholder = 'Digite seu nome';
         $nome->addValidation('Nome', new TRequiredValidator);
 
-        $dataNascimento = new TDate('dt_nascimento');
+        $dataNascimento = new TDate('data_nascimento');
         $dataNascimento->setMask('dd/mm/yyyy');
         $dataNascimento->setDatabaseMask('yyyy-mm-dd');
         $dataNascimento->setSize('100%');
@@ -141,13 +141,29 @@ class PessoaForm extends TPage{
 
     public function onSave( $param ){
         try{
-            TTransaction::open( 'permission' );
+            TTransaction::open( 'siuel_negocio' ); // ALTERAR BASE
             $this->form->validate();
 
             $data = $this->form->getData();
 
+            // gera endereco
+            $endereco = new Endereco;
+            $endereco->fromArray((array) $data);
+
+            // gera contato
+            $contato = new Contato;
+            $contato->fromArray((array) $data);
+            
             $pessoa = new Pessoa;
             $pessoa->fromArray((array) $data);
+            $pessoa->endereco = $endereco;
+            $pessoa->contato = $contato;
+
+            /*print_r('<pre>');
+            print_r($pessoa->data_nascimento);
+            print_r('</pre>');
+            die;*/
+            
             $pessoa->store();
 
             $this->form->setData( $pessoa );
@@ -163,7 +179,12 @@ class PessoaForm extends TPage{
 
     public function onEdit( $param ){
         try{
-            TTransaction::open( 'permission' );
+            TTransaction::open( 'siuel_negocio' );
+
+            // Identifica se deve abri lateral ou não
+            if( !empty($param['target_container']) ){
+                parent::setTargetContainer($param['target_container']);
+            }
 
             if(isset($param['key'])){
                 $key = $param['key'];

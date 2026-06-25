@@ -103,10 +103,13 @@
     <menuitem label='Cadastro'>
         <icon>fa:clipboard-list fa-fw</icon>
         <menu>
+            <menuitem label='PessoaL'>
+                <icon>fa:user fa-fw</icon>
+                <action>PessoaList</action>
+            </menuitem>
             <menuitem label='Pessoa'>
                 <icon>fa:user fa-fw</icon>
                 <action>PessoaForm</action>
-                <!--<action>PessoaTraitForm</action>-->
             </menuitem>
             <!--<menuitem label='Common page 2'>
                 <icon></icon>

@@ -25,11 +25,60 @@ class Pessoa extends TRecord{
 
         parent::addAttribute('nome');
         parent::addAttribute('data_nascimento');
-        parent::addAttribute('genero');        
-        parent::addAttribute('endereco_id');
-        parent::addAttribute('contato_id');
+        parent::addAttribute('genero');
+        parent::addAttribute('tipo_pessoa');
+        parent::addAttribute('status');     
+        //parent::addAttribute('endereco_id');
+        //parent::addAttribute('contato_id');
         parent::addAttribute('data_criacao');
         parent::addAttribute('data_modificacao');
+    }
+
+    /**
+     * Carrega a pessoa e suas composiçoes; contatos e endereço
+     * @param $id Pessoa ID
+     */
+    public function load($id){
+
+        $this->endereco = parent::loadComposite('Endereco', 'pessoa_id', $id);
+        $this->contato = parent::loadComposite('Contato', 'pessoa_id', $id);
+
+        // Carrega o endereço
+        return parent::load($id);
+    }
+
+    /**
+     * Grava a pessoa e suas composições; contato e endereço
+     */
+    public function store(){
+        // grava o objeto
+        parent::store();
+
+        if( $this->endereco instanceof Endereco ){
+            $this->endereco->pessoa_id = $this->pessoa_id;
+            $this->endereco->store();
+        }
+
+        if( $this->contato instanceof Contato ){
+            $this->contato->pessoa_id = $this->pessoa_id;
+            $this->contato->store();
+        }
+
+    }
+
+    /**
+     * Apaga a pessoa e suas agregações
+     * @param $id pessoa ID
+     */
+    public function delete($id = NULL){
+        // apaga a pessoa e seu contato e endereço
+        if(!empty($id)){
+            Endereco::delete($id);
+            Contato::deleto($id);
+            
+            parent::delete($id);
+        }
+        
     }
 
     /**
