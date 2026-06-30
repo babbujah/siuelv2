@@ -24,6 +24,7 @@ class Pessoa extends TRecord{
         parent::__construct($id, $callObjectLoad);
 
         parent::addAttribute('nome');
+        parent::addAtrribute('cpf');
         parent::addAttribute('data_nascimento');
         parent::addAttribute('genero');
         parent::addAttribute('tipo_pessoa');
@@ -36,15 +37,36 @@ class Pessoa extends TRecord{
 
     /**
      * Carrega a pessoa e suas composiçoes; contatos e endereço
+     * Carrega os dados do relacionamento
      * @param $id Pessoa ID
      */
     public function load($id){
 
-        $this->endereco = parent::loadComposite('Endereco', 'pessoa_id', $id);
-        $this->contato = parent::loadComposite('Contato', 'pessoa_id', $id);
+        //$this->endereco = parent::loadComposite('Endereco', 'pessoa_id', $id);
+        //$this->contato = parent::loadComposite('Contato', 'pessoa_id', $id);
+
+        // carrega a pessoa
+        parent::load($id);
+
+        // carregar relacionamentos
+        $this->endereco = Endereco::where('pessoa_id', '=', $id)->first();
+        $this->contato = Contato::where('pessoa_id', '=', $id)->first();
 
         // Carrega o endereço
-        return parent::load($id);
+        return $this;
+    }
+
+    /**
+     * Method saveComplete
+     * Faz validações e grava objeto Pessoa
+     * 
+     * returns object
+     */
+    public function saveComplete(){
+        $this->store();
+
+        return $this;
+
     }
 
     /**
@@ -54,29 +76,47 @@ class Pessoa extends TRecord{
         // grava o objeto
         parent::store();
 
+        // Endereço
         if( $this->endereco instanceof Endereco ){
             $this->endereco->pessoa_id = $this->pessoa_id;
-            $this->endereco->store();
+
+            if( empty($this->endereco->endereco_id) ){
+                $this->endereco->store();
+
+            }else{
+                $this->endereco->store();
+            }
         }
 
+        // Contato
         if( $this->contato instanceof Contato ){
             $this->contato->pessoa_id = $this->pessoa_id;
-            $this->contato->store();
-        }
 
+            if( empty($this->contato->contato_id) ){
+                $this->contato->store();
+
+            }else{
+                $this->contato->store();
+
+            }
+
+        }
     }
 
     /**
      * Apaga a pessoa e suas agregações
      * @param $id pessoa ID
      */
-    public function delete($id = NULL){
+    public function delete($pessoa_id = NULL){
         // apaga a pessoa e seu contato e endereço
-        if(!empty($id)){
-            Endereco::delete($id);
-            Contato::deleto($id);
+        if(!empty($pessoa_id)){
+
+            // remove depencias
+            Endereco::where('pessoa_id', '=', $pessoa_id )->delete();
+            Contato::where('pessoa_id', '=', $pessoa_id)->delete();
             
-            parent::delete($id);
+            //remove pessoa
+            parent::delete($pessoa_id);
         }
         
     }
@@ -88,7 +128,7 @@ class Pessoa extends TRecord{
      */
     public function get_contato(){
         if( empty($this->contato) ){
-            $this->contato = new Contato($this->contato_id);
+            $this->contato = Contato::where('pessoa_id', '=', $this->pessoa_id)->first();
         }
     
         return $this->contato;
@@ -107,11 +147,11 @@ class Pessoa extends TRecord{
     /**
      * Method get_endereco
      * Sample of usage: $pessoa->endereco->attribute;
-     * @returns Endereco instance
+     * @return Endereco instance
      */
     public function get_endereco(){
         if( empty($this->endereco) ){
-            $this->endereco = new Endereco($this->endereco_id);
+            $this->endereco = Endereco::where('pessoa_id', '=', $this->pessoa_id)->first();
         }
     
         return $this->endereco;
@@ -125,6 +165,155 @@ class Pessoa extends TRecord{
     public function set_endereco( Endereco $e ){
         $this->endereco = $e;
         $this->endereco_id = $e->endereco_id;
+    }
+
+    /**
+     * Method helper toFormData
+     * Get date for load object Pessoa
+     * Adapt date to form format
+     * @return stdClass $data contenting Pessoa
+     */
+    public function toFormData(){
+        $data = new stdClass;
+
+        // dados de pessoa
+        $data->pessoa_id = $this->pessoa_id;
+        $data->nome = $this->nome;
+        $data->cpf = $this->cpf;
+        $data->data_nascimento = $this->data_nascimento;
+        $data->genero = $this->genero;
+        $data->tipo_pessoa = $this->tipo_pessoa;
+        $data->status = $this->status;
+
+        // contato
+        if( $this->contato ){
+            $data->contato_id = $this->contato->contato_id;
+            $data->telefone1 = $this->contato->telefone1;
+            $data->telefone2 = $this->contato->telefone2;
+            $data->email = $this->contato->email;
+
+        }
+
+        // endereço
+        if( $this->endereco ){
+            $data->endereco_id = $this->endereco->endereco_id;
+            $data->logradouro = $this->endereco->logradouro;
+            $data->numero = $this->endereco->numero;
+            $data->complemento = $this->endereco->complemento;
+            $data->cidade = $this->endereco->cidade;
+            $data->cep = $this->endereco->cep;
+        }
+
+        return $data;
+    }
+
+    public static function fromFormData($data){
+        // Pessoa
+        if( !empty($data->pessoa_id) ){
+            $pessoa = new Pessoa($data->pessoa_id);
+
+        }else{
+            $pessoa = new Pessoa;
+
+        }
+
+        self::applyDataIfFilled( $pessoa, $data, [
+            'nome',
+            'cpf',
+            'data_nascimento',
+            'genero',
+            'tipo_pessoa',
+            'status'
+        ] );
+
+        //$pessoa->fromArray((array) $data);
+
+        // Contato
+        if( !empty($data->contato_id) ){
+            $contato = new Contato( $data->contato_id );
+
+        }else if(!empty($data->pessoa_id)){
+            // reaproveita contato existente
+            $contato = Contato::where('pessoa_id', '=', $data->pessoa_id)->first();
+
+            if( !$contato ){
+                $contato = new Contato;
+
+            }
+
+        }else{
+            $contato = new Contato;
+
+        }
+
+        self::applyDataIfFilled( $contato, $data, [
+            'telefone1',
+            'telefone2',
+            'email'
+        ] );
+
+        // exclusão proposital
+        if( !empty($data->limpar_telefone2) ){
+            $contato->telefone2 = null;
+
+        }
+
+        //$contato->fromArray( (array) $data);
+
+        // Endereco
+        if( !empty($data->endereco_id) ){
+            $endereco = new Endereco( $data->endereco_id );
+        
+        }else if( !empty($data->pessoa_id) ){
+            // reaproveita endereço existente
+            $endereco = Endereco::where( 'pessoa_id', '=', $data->pessoa_id )->first();
+
+            if( !endereco ){
+                $endereco = new Endereco;
+
+            }
+
+        }else{
+            $endereco = new Endereco;
+
+        }
+
+        self::applyDataIfFilled( $endereco, $data, [
+            'logradouro',
+            'numero',
+            'bairro',
+            'complemento',
+            'cidade',
+            'cep'
+        ] );
+
+        //$endereco->fromArray( (array) $data );
+
+        // Relacionamento
+        $pessoa->contato = $contato;
+        $pessoa->endereco = $endereco;
+
+        return $pessoa;
+    }
+
+    /**
+     * Method helper applyDataIfFilled
+     * @param $object
+     * @param $data
+     * @param array $fields
+     * 
+     * @return $object
+     */
+    public static function applyDataIfFilled( $object, $data, array $fields ){
+        foreach( $fields as $field ){
+            if( isset($data->$field) && $data->$field !== '' && $data->$field !== null ){
+                $object->$field = $data->$field;
+
+            }
+
+            return $object;
+
+        }
     }
 }
 ?>

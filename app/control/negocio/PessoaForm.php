@@ -25,6 +25,11 @@ class PessoaForm extends TPage{
         $nome->placeholder = 'Digite seu nome';
         $nome->addValidation('Nome', new TRequiredValidator);
 
+        $cpf = new TEntry('cpf');
+        $cpf->setSize('100%');
+        $cpf->placeholder = 'Digite o CPF';
+        $cpf->setMask('999.999.999-99', true);
+
         $dataNascimento = new TDate('data_nascimento');
         $dataNascimento->setMask('dd/mm/yyyy');
         $dataNascimento->setDatabaseMask('yyyy-mm-dd');
@@ -39,10 +44,25 @@ class PessoaForm extends TPage{
         $genero->setUseButton();
         $genero->setValue('M');
 
-        $idContato = new TEntry('contato_id');
-        $idContato->setSize('100%');
-        $idContato->setEditable(FALSE);
+        $tipoPessoa = new TCombo('tipo_pessoa');
+        $tipoPessoa->setSize('100%');
+        $tipoPessoa->addItems([
+            'escotista' => 'Escotista',
+            'jovem' => 'Jovem',
+            'reponsavel' => 'Responsável',
+            'outro' => 'Outro'
+        ]);
 
+        $status = new TCombo('status');
+        $status->setSize('100%');
+        $status->addItems([
+            '1' => 'Ativo',
+            '2' => 'Inativo'
+        ]);
+        $status->setValue('1');
+
+        $idContato = new THidden('contato_id');
+        
         $telefone1 = new TEntry('telefone1');
         $telefone1->setSize('100%');
         $telefone1->placeholder = '(00) 00000-0000';
@@ -56,15 +76,16 @@ class PessoaForm extends TPage{
         $telefone2->setSize('100%');
         $telefone2->setMask('(99) 99999-9999', true);
 
+        $limparTelefone2 = new TCheckButton('limpar_telefone2');
+        $limparTelefone2->setIndexValue('1');
+
         $email = new TEntry('email');
         $email->setSize('100%');
         $email->placeholder = 'Entre com seu email';
         $email->addValidation('Email', new TEmailValidator);
 
         $idEndereco = new THidden('endereco_id');
-        $idEndereco->setSize('100%');
-        $idEndereco->setEditable(FALSE);
-
+        
         $logradouro = new TEntry('logradouro');
         $logradouro->setSize('100%');
         $logradouro->placeholder = 'Entre com seu logradouro';
@@ -91,16 +112,36 @@ class PessoaForm extends TPage{
         $cep->setMask('99999-999');
         $cep->setExitAction(new TAction([$this, 'buscarCep']));
 
-        $this->form->addFields([new TLabel('ID'),$idPessoa],[new TLabel('GÊNERO'),NULL], [NULL,$genero]);
-        $this->form->addFields([new TLabel('NASCIMENTO'), $dataNascimento],[new TLabel('NOME'), $nome]);
+        $this->form->addFields([$idContato], [$idEndereco]);
+        $this->form->addFields(
+            [new TLabel('ID')], [$idPessoa],
+            [new TLabel('CPF')], [$cpf]
+        );
+
+        $this->form->addFields(
+            [new TLabel('NOME')], [$nome],
+            [new TLabel('NASCIMENTO')], [$dataNascimento]
+        );
+
+        $this->form->addFields(
+            [new TLabel('GÊNERO')], [$genero],
+            [new TLabel('TIPO')], [$tipoPessoa],
+            [new TLabel('STATUS')], [$status]
+        );
+        //$this->form->addFields([new TLabel('ID'),$idPessoa],[new TLabel('GÊNERO'),NULL], [NULL,$genero]);
+        //$this->form->addFields([new TLabel('NASCIMENTO'), $dataNascimento],[new TLabel('NOME'), $nome]);
         
         $label = new TLabel('CONTATOS', 'var(--bs-secondary-color)', 12, 'bi');
         $label->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
         $this->form->addContent( [$label] );
         
         $this->form->addFields([new TLabel('TELEFONE (OBRIGATÓRIO)')], [$telefone1],
-                               [new TLabel('TELEFONE SECUNDÁRIO')], [$telefone2],
-                               [new TLabel('EMAIL')], [$email]);
+                               
+        );
+
+        $this->form->addFields([new TLabel('TELEFONE SECUNDÁRIO')], [$telefone2],
+                               [new TLabel('Limpar?')], [$limparTelefone2]);
+        $this->form->addFields([new TLabel('EMAIL')], [$email]);
 
         $label = new TLabel('ENDEREÇO', 'var(--bs-secondary-color)', 12, 'bi');
         $label->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';
@@ -141,35 +182,32 @@ class PessoaForm extends TPage{
 
     public function onSave( $param ){
         try{
-            TTransaction::open( 'siuel_negocio' ); // ALTERAR BASE
-            $this->form->validate();
+            TTransaction::open( 'siuel_negocio' );
 
+            $this->form->validate();
             $data = $this->form->getData();
 
-            // gera endereco
-            $endereco = new Endereco;
-            $endereco->fromArray((array) $data);
+            $pessoa = Pessoa::fromFormData( $data )->saveComplete();
 
-            // gera contato
-            $contato = new Contato;
-            $contato->fromArray((array) $data);
-            
-            $pessoa = new Pessoa;
-            $pessoa->fromArray((array) $data);
-            $pessoa->endereco = $endereco;
-            $pessoa->contato = $contato;
+            // atualiza o formulário
+            $data->pessoa_id = $pessoa->pessoa_id;
 
-            /*print_r('<pre>');
-            print_r($pessoa->data_nascimento);
-            print_r('</pre>');
-            die;*/
-            
-            $pessoa->store();
+            if( $pessoa->contato instanceof Contato ){
+                $data->contato_id = $pessoa->contato->contato_id;
 
-            $this->form->setData( $pessoa );
+            }
+
+            if( $pessoa->endereco instanceof Endereco ){
+                $data->endereco_id = $pessoa->endereco->endereco_id;
+
+            }
+
+            $this->form->setData( $data );
+
+            TTransaction::close();
 
             new TMessage( 'info', 'Registro salvo com sucesso' );
-            TTransaction::close();
+
         }catch( Exception $e ){
             new TMessage( 'error', $e->getMessage() );
             TTransaction::rollback();
@@ -188,8 +226,12 @@ class PessoaForm extends TPage{
 
             if(isset($param['key'])){
                 $key = $param['key'];
+
                 $pessoa = new Pessoa( $key );
-                $this->form->setData( $pessoa );
+
+                $data = $pessoa->toFormData();
+
+                $this->form->setData( $data );
 
             }else{
                 $this->form->clear(true);
