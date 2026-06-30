@@ -83,11 +83,11 @@ class PessoaList extends TPage{
             $map = [
                 'escotista' => 'primary',
                 'jovem' => 'success',
-                'reponsavel' => 'warning'
+                'responsavel' => 'warning'
 
             ];
 
-            $classe = $map[$value] ?? 'secundary';
+            $classe = $map[$value] ?? 'secondary';
 
             return "<span class='badge bg-{$classe}'>" . ucfirst($value) . "</span>";
         });
@@ -110,7 +110,7 @@ class PessoaList extends TPage{
          * Ações padrão
          */
         $action_delete = new TDataGridAction([$this, 'onDelete']);
-        $action_delete->setField('id');
+        $action_delete->setField('pessoa_id');
         $action_delete->setImage('fa:trash red');
         $this->datagrid->addAction($action_delete);
 
@@ -196,7 +196,7 @@ class PessoaList extends TPage{
 
             new TMessage('info', 'Registro excluído com sucesso');
 
-            TApplication::loadPage('PessoalList', 'onReload');
+            TApplication::loadPage('PessoaList', 'onReload');
 
         }catch( Exception $e ){
             new TMessage('error', $e->getMessage());
