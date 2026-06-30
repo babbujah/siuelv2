@@ -43,14 +43,17 @@ class Pessoa extends TRecord{
     public function load($id){
         
         // carrega a pessoa
-        parent::load($id);
+        $object = parent::load($id);
 
-        // carregar relacionamentos
-        $this->endereco = Endereco::where('pessoa_id', '=', $id)->first();
-        $this->contato = Contato::where('pessoa_id', '=', $id)->first();
+        if( $object ){
+            // carregar relacionamentos
+            $this->endereco = Endereco::where('pessoa_id', '=', $id)->first();
+            $this->contato = Contato::where('pessoa_id', '=', $id)->first();
+
+        }
 
         // Carrega o endereço
-        return $this;
+        return $object;
     }
 
     /**
@@ -169,22 +172,22 @@ class Pessoa extends TRecord{
         $data->status = $this->status;
 
         // contato
-        if( $this->contato ){
-            $data->contato_id = $this->contato->contato_id;
-            $data->telefone1 = $this->contato->telefone1;
-            $data->telefone2 = $this->contato->telefone2;
-            $data->email = $this->contato->email;
+        if( !empty($this->contato) ){
+            $data->contato_id = $this->contato->contato_id ?? null;
+            $data->telefone1 = $this->contato->telefone1 ?? null;
+            $data->telefone2 = $this->contato->telefone2 ?? null;
+            $data->email = $this->contato->email ?? null;
 
         }
 
         // endereço
-        if( $this->endereco ){
-            $data->endereco_id = $this->endereco->endereco_id;
-            $data->logradouro = $this->endereco->logradouro;
-            $data->numero = $this->endereco->numero;
-            $data->complemento = $this->endereco->complemento;
-            $data->cidade = $this->endereco->cidade;
-            $data->cep = $this->endereco->cep;
+        if( !empty($this->endereco) ){
+            $data->endereco_id = $this->endereco->endereco_id ?? null;
+            $data->logradouro = $this->endereco->logradouro ?? null;
+            $data->numero = $this->endereco->numero ?? null;
+            $data->complemento = $this->endereco->complemento ?? null;
+            $data->cidade = $this->endereco->cidade ?? null;
+            $data->cep = $this->endereco->cep ?? null;
         }
 
         return $data;

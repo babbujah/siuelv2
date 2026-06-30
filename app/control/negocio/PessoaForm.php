@@ -159,8 +159,14 @@ class PessoaForm extends TPage{
 
         }
 
-        $this->form->addAction( 'Salvar', new TAction([$this, 'onSave']), 'fa:save green' );
-        $this->form->addActionLink( 'Limpar', new TAction([$this, 'onClear']), 'fa:eraser red' );
+        $this->form->addAction( _t('Save'), new TAction([$this, 'onSave']), 'fa:save green' );
+        $this->form->addActionLink( _t('Clear'), new TAction([$this, 'onClear']), 'fa:eraser red' );
+        
+        $btn_close = new TButton('btn_close');
+        $btn_close->setLabel('Fechar');
+        $btn_close->setImage('fa:times red');
+        $btn_close->setProperty('onclick', 'Template.closeRightPanel(); return false;');
+        $this->form->addHeaderWidget($btn_close);
 
         // vertical box container
         $container = new TVBox;
@@ -174,6 +180,10 @@ class PessoaForm extends TPage{
 
     public function onClear( $param ){
         $this->form->clear(true);
+    }
+
+    public function onClose(){
+        TScript::create("Adianti.closeRightPanel();");
     }
 
     public function onSave( $param ){
@@ -202,7 +212,16 @@ class PessoaForm extends TPage{
 
             TTransaction::close();
 
-            new TMessage( 'info', 'Registro salvo com sucesso' );
+            //new TMessage( 'info', 'Registro salvo com sucesso' );
+
+            // toast
+            TToast::show('success', 'Registro salvo com sucesso', 'top right');
+            
+            // fecha painel lateral
+            TScript::create("Template.closeRightPanel();");
+
+            // recarrega lista
+            TApplication::loadPage('PessoaList', 'onReload');
 
         }catch( Exception $e ){
             new TMessage( 'error', $e->getMessage() );
