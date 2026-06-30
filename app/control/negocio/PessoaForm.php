@@ -76,9 +76,6 @@ class PessoaForm extends TPage{
         $telefone2->setSize('100%');
         $telefone2->setMask('(99) 99999-9999', true);
 
-        $limparTelefone2 = new TCheckButton('limpar_telefone2');
-        $limparTelefone2->setIndexValue('1');
-
         $email = new TEntry('email');
         $email->setSize('100%');
         $email->placeholder = 'Entre com seu email';
@@ -140,8 +137,7 @@ class PessoaForm extends TPage{
         );
 
         $this->form->addFields([new TLabel('TELEFONE SECUNDÁRIO')], [$telefone2],
-                               [new TLabel('Limpar?')], [$limparTelefone2]);
-        $this->form->addFields([new TLabel('EMAIL')], [$email]);
+                               [new TLabel('EMAIL')], [$email]);
 
         $label = new TLabel('ENDEREÇO', 'var(--bs-secondary-color)', 12, 'bi');
         $label->style='text-align:left;border-bottom:1px solid #c0c0c0;width:100%';

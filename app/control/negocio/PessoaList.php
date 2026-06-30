@@ -12,9 +12,7 @@ class PessoaList extends TPage{
     private $form; //form
     private $datagrid; //listing
     private $pageNavigation;
-    private $formgrid;
     private $loaded;
-    private $deleteButton;
     
     /**
      * Class constructor
@@ -58,11 +56,15 @@ class PessoaList extends TPage{
         );
 
         // Ações
+        $this->form->addAction(_t('New'), new TAction(['PessoaForm', 'onEdit']), 'fa:plus green');
         $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search blue');
         $this->form->addAction(_t('Clear'), new TAction([$this, 'onClear']), 'fa:eraser red');
 
-        // Melhor UX
-        $this->form->setData(TSession::getValue('pessoa_filter_data'));
+        // Melhor UX        
+        $data = TSession::getValue('pessoa_filter_data');
+        if ($data) {
+            $this->form->setData($data);
+        }
 
         /**
          * DATAGRID
@@ -73,18 +75,35 @@ class PessoaList extends TPage{
         //$this->datagrid->disableDefaultClick();
 
         // Colunas
-        $col_id = new TDataGridColumn('id', 'Código', 'center', '10%');
+        $col_id = new TDataGridColumn('pessoa_id', 'Código', 'center', '10%');
         $col_nome = new TDataGridColumn('nome', 'Nome', 'left', '30%');
+        
+        $col_tipo = new TDataGridColumn('tipo_pessoa', 'Tipo', 'center', '20%');
+        $col_tipo->setTransformer(function($value){
+            $map = [
+                'escotista' => 'primary',
+                'jovem' => 'success',
+                'reponsavel' => 'warning'
+
+            ];
+
+            $classe = $map[$value] ?? 'secundary';
+
+            return "<span class='badge bg-{$classe}'>" . ucfirst($value) . "</span>";
+        });
         
         $this->datagrid->addColumn($col_id);
         $this->datagrid->addColumn($col_nome);
+        $this->datagrid->addColumn($col_tipo);
 
         /**
          * Painel Lateral
          */
         //$this->datagrid->setRowAction(new TDataGridAction([$this, 'onEdit']));
         $action_view = new TDataGridAction([$this, 'onEdit']);
-        $action_view->setField('id');
+        $action_view->setField('pessoa_id');
+        
+        // Obrigatório para o TScrip
         $this->datagrid->addAction($action_view);
 
         /**
@@ -96,6 +115,24 @@ class PessoaList extends TPage{
         $this->datagrid->addAction($action_delete);
 
         $this->datagrid->createModel();
+
+        TScript::create("
+            $(document).on('click', '.tdatagrid tbody tr', function(e){
+
+                // evita interferir com botões
+                if ($(e.target).is('a, i, button')) {
+                    return;
+                }
+
+                var link = $(this).find('a:first').attr('href');
+
+                if(link){
+                    __adianti_load_page(link);
+                }
+            });
+
+            $('.tdatagrid tbody tr').css('cursor', 'pointer');
+        ");
         
         /**
          * Busca no grid
@@ -104,7 +141,7 @@ class PessoaList extends TPage{
         $input_busca->placeholder = 'Busca rápida...';
         $input_busca->setSize('100%');
         
-        $this->datagrid->enableSearch($input_busca, 'id, nome');
+        $this->datagrid->enableSearch($input_busca, 'pessoa_id, nome');
 
         /**
          * Painel do grid
@@ -143,55 +180,76 @@ class PessoaList extends TPage{
      */
     public function onEdit($param){
         TApplication::loadPage('PessoaForm', 'onEdit', [
-            'key' => $param[$key],
+            'key' => $param['key'],
             'target_container' => 'adianti_right_panel'
         ]);
     }
 
     public static function onDelete($param){
-        new TMessage('info', 'Excluir ID: ' . $param['id']);
+        try{
+            TTransaction::open('siuel_negocio');
+
+            $pessoa = new Pessoa( $param['key'] );
+            $pessoa->delete($param['key']);
+
+            TTransaction::close();
+
+            new TMessage('info', 'Registro excluído com sucesso');
+
+            TApplication::loadPage('PessoalList', 'onReload');
+
+        }catch( Exception $e ){
+            new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
+        }
     }
-    
-    
-    
     
     public function onReload($param = null){
         
-    $this->datagrid->clear();
+        try{
+            TTransaction::open('siuel_negocio');
 
-        $data = TSession::getValue('pessoa_filter_data');
+            $this->datagrid->clear();
 
-        foreach ($this->getMockData() as $item) {
+            $criteria = new TCriteria;
 
-            // filtros simples (mock)
-            if (!empty($data->nome) && stripos($item->nome, $data->nome) === false) {
-                continue;
+            $data = TSession::getValue('pessoa_filter_data');
+
+            if( !empty($data->nome) ){
+                $criteria->add( new TFilter('nome', 'like', "%{$data->nome}%") );
             }
 
-            $this->datagrid->addItem($item);
+            if( !empty($data->cpf) ){
+                $criteria->add( new TFilter('cpf', 'like', "%{$data->cpf}%") );
+            }
+
+            if( !empty($data->tipo_pessoa) ){
+                $criteria->add( new TFilter('tipo_pessoa', '=', $data->tipo_pessoa) );
+            }
+
+            if( !empty($data->status) ){
+                $criteria->add( new TFilter('status', '=', $data->status) );
+            }
+
+            $repo = new TRepository('Pessoa');
+            $pessoas = $repo->load($criteria);
+
+            if( $pessoas ){
+                foreach( $pessoas as $pessoa ){
+                    $this->datagrid->addItem($pessoa);
+                }
+            }
+
+            TTransaction::close();
+
+        }catch( Exception $e ){
+            new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
+
         }
+
+        
     }
-
-    private function getMockData()
-    {
-        $items = [];
-
-        $nomes = ['Aretha Franklin', 'Eric Clapton', 'B. B. King', 'Janis Joplin'];
-
-        foreach ($nomes as $i => $nome) {
-
-            $obj = new stdClass;
-            $obj->id = $i+1;
-            $obj->nome = $nome;
-            $obj->cidade = 'Cidade ' . ($i+1);
-            $obj->estado = 'Estado ' . ($i+1);
-
-            $items[] = $obj;
-        }
-
-        return $items;
-    }
-
 
     public function show(){
         if( !$this->loaded ){

@@ -24,7 +24,7 @@ class Pessoa extends TRecord{
         parent::__construct($id, $callObjectLoad);
 
         parent::addAttribute('nome');
-        parent::addAtrribute('cpf');
+        parent::addAttribute('cpf');
         parent::addAttribute('data_nascimento');
         parent::addAttribute('genero');
         parent::addAttribute('tipo_pessoa');
@@ -41,10 +41,7 @@ class Pessoa extends TRecord{
      * @param $id Pessoa ID
      */
     public function load($id){
-
-        //$this->endereco = parent::loadComposite('Endereco', 'pessoa_id', $id);
-        //$this->contato = parent::loadComposite('Contato', 'pessoa_id', $id);
-
+        
         // carrega a pessoa
         parent::load($id);
 
@@ -54,6 +51,26 @@ class Pessoa extends TRecord{
 
         // Carrega o endereço
         return $this;
+    }
+
+    /**
+     * Grava a pessoa e suas composições; contato e endereço
+     */
+    public function store(){
+        // grava o objeto
+        parent::store();
+
+        // Endereço
+        if( $this->endereco instanceof Endereco ){
+            $this->endereco->pessoa_id = $this->pessoa_id;
+            $this->endereco->store();
+        }
+
+        // Contato
+        if( $this->contato instanceof Contato ){
+            $this->contato->pessoa_id = $this->pessoa_id;
+            $this->contato->store();
+        }
     }
 
     /**
@@ -67,40 +84,6 @@ class Pessoa extends TRecord{
 
         return $this;
 
-    }
-
-    /**
-     * Grava a pessoa e suas composições; contato e endereço
-     */
-    public function store(){
-        // grava o objeto
-        parent::store();
-
-        // Endereço
-        if( $this->endereco instanceof Endereco ){
-            $this->endereco->pessoa_id = $this->pessoa_id;
-
-            if( empty($this->endereco->endereco_id) ){
-                $this->endereco->store();
-
-            }else{
-                $this->endereco->store();
-            }
-        }
-
-        // Contato
-        if( $this->contato instanceof Contato ){
-            $this->contato->pessoa_id = $this->pessoa_id;
-
-            if( empty($this->contato->contato_id) ){
-                $this->contato->store();
-
-            }else{
-                $this->contato->store();
-
-            }
-
-        }
     }
 
     /**
@@ -135,16 +118,6 @@ class Pessoa extends TRecord{
     }
 
     /**
-     * Method set_contato
-     * Sample of usage: $pessoa->contato = $contato;
-     * @param $c Instance of Contato
-     */
-    public function set_contato( Contato $c ){
-        $this->contato = $c;
-        $this->contato_id = $c->contato_id;
-    }
-
-    /**
      * Method get_endereco
      * Sample of usage: $pessoa->endereco->attribute;
      * @return Endereco instance
@@ -155,6 +128,16 @@ class Pessoa extends TRecord{
         }
     
         return $this->endereco;
+    }
+
+    /**
+     * Method set_contato
+     * Sample of usage: $pessoa->contato = $contato;
+     * @param $c Instance of Contato
+     */
+    public function set_contato( Contato $c ){
+        $this->contato = $c;
+        $this->contato_id = $c->contato_id;
     }
 
     /**
@@ -207,6 +190,46 @@ class Pessoa extends TRecord{
         return $data;
     }
 
+    /**
+     * Method helper applySmartUpdate
+     * Atualiza apenas os campos alterados
+     * Se o novo valor for vazio, limpa o campo.
+     * 
+     * @param object $object
+     * @param object $data
+     * @param array $fields
+     * 
+     * @return $object
+     */    
+    private static function applySmartUpdate( $object, $data, array $fields ){
+        foreach( $fields as $field ){
+            $valorNovo = $data->$field ?? null;
+            $valorAtual = $object->$field ?? null;
+
+            // Com alteração
+            if( $valorNovo !== $valorAtual ){
+                // valor vazio | remove
+                if( $valorNovo === '' || $valorNovo === null ){
+                    $object->$field = null;
+
+                }else{
+                    $object->$field = $valorNovo;
+
+                }
+            }
+        }
+
+        return $object;
+    }
+
+    /**
+     * Method helper fromFormData
+     * Captura dados do formulário
+     * 
+     * @param object $data
+     * 
+     * @return $object
+     */  
     public static function fromFormData($data){
         // Pessoa
         if( !empty($data->pessoa_id) ){
@@ -217,7 +240,7 @@ class Pessoa extends TRecord{
 
         }
 
-        self::applyDataIfFilled( $pessoa, $data, [
+        self::applySmartUpdate( $pessoa, $data, [
             'nome',
             'cpf',
             'data_nascimento',
@@ -225,8 +248,6 @@ class Pessoa extends TRecord{
             'tipo_pessoa',
             'status'
         ] );
-
-        //$pessoa->fromArray((array) $data);
 
         // Contato
         if( !empty($data->contato_id) ){
@@ -246,19 +267,11 @@ class Pessoa extends TRecord{
 
         }
 
-        self::applyDataIfFilled( $contato, $data, [
+        self::applySmartUpdate( $contato, $data, [
             'telefone1',
             'telefone2',
             'email'
         ] );
-
-        // exclusão proposital
-        if( !empty($data->limpar_telefone2) ){
-            $contato->telefone2 = null;
-
-        }
-
-        //$contato->fromArray( (array) $data);
 
         // Endereco
         if( !empty($data->endereco_id) ){
@@ -268,7 +281,7 @@ class Pessoa extends TRecord{
             // reaproveita endereço existente
             $endereco = Endereco::where( 'pessoa_id', '=', $data->pessoa_id )->first();
 
-            if( !endereco ){
+            if( !$endereco ){
                 $endereco = new Endereco;
 
             }
@@ -278,7 +291,7 @@ class Pessoa extends TRecord{
 
         }
 
-        self::applyDataIfFilled( $endereco, $data, [
+        self::applySmartUpdate( $endereco, $data, [
             'logradouro',
             'numero',
             'bairro',
@@ -286,34 +299,14 @@ class Pessoa extends TRecord{
             'cidade',
             'cep'
         ] );
-
-        //$endereco->fromArray( (array) $data );
-
+        
         // Relacionamento
         $pessoa->contato = $contato;
         $pessoa->endereco = $endereco;
 
         return $pessoa;
     }
-
-    /**
-     * Method helper applyDataIfFilled
-     * @param $object
-     * @param $data
-     * @param array $fields
-     * 
-     * @return $object
-     */
-    public static function applyDataIfFilled( $object, $data, array $fields ){
-        foreach( $fields as $field ){
-            if( isset($data->$field) && $data->$field !== '' && $data->$field !== null ){
-                $object->$field = $data->$field;
-
-            }
-
-            return $object;
-
-        }
-    }
+    
+    
 }
 ?>
