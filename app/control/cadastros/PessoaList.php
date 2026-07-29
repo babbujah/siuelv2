@@ -4,7 +4,7 @@
  * PessoaList Listing
  * 
  * @version     1.0
- * @package     control/negocio
+ * @package     control/cadastro
  * @author      Bruno Lopes
  * @since       10/05/2026
  */
@@ -56,7 +56,7 @@ class PessoaList extends TPage{
         );
 
         // Ações
-        $this->form->addAction(_t('New'), new TAction(['PessoaForm', 'onEdit']), 'fa:plus green');
+        $this->form->addAction(_t('New'), new TAction(['PessoaPanelForm', 'onEdit']), 'fa:plus green');
         $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search blue');
         $this->form->addAction(_t('Clear'), new TAction([$this, 'onClear']), 'fa:eraser red');
 
@@ -179,7 +179,7 @@ class PessoaList extends TPage{
      * Form Lateral
      */
     public function onEdit($param){
-        TApplication::loadPage('PessoaForm', 'onEdit', [
+        TApplication::loadPage('PessoaPanelForm', 'onEdit', [
             'key' => $param['key'],
             'target_container' => 'adianti_right_panel'
         ]);

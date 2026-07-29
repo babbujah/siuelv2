@@ -2,19 +2,20 @@
 /**
  * PessoaForm Form
  * @version    1.0
- * @package    control/negocio
+ * @package    control/cadastros
  * @author     brunosilva
  * @since      04/04/2026
  */
-class PessoaForm extends TPage{
-    private $form;
+class PessoaForm extends PessoaFormBase{
+    //private $form;
 
     public function __construct(){
         parent::__construct();
         
-        $this->form = new BootstrapFormBuilder('form_pessoa');
+        /*$this->form = new BootstrapFormBuilder('form_pessoa');
         $this->form->setFormTitle('Cadastro de Pessoa');
-        $this->form->setClientValidation(true);
+        $this->form->setClientValidation(true);*/
+        $this->createForm();
 
         $idPessoa = new TEntry('pessoa_id');
         $idPessoa->setSize('100%');
@@ -178,9 +179,17 @@ class PessoaForm extends TPage{
 
     }
 
-    public function onClear( $param ){
-        $this->form->clear(true);
+    protected function createForm(){
+        $this->form = new BootstrapFormBuilder('form_pessoa');
+        $this->form->setFormTitle('Cadastro de Pessoa');
+        $this->form->setClientValidation(true);
     }
+    
+    protected function createPessoaFields(){
+        
+    }
+
+    
 
     public function onClose(){
         TScript::create("Adianti.closeRightPanel();");
