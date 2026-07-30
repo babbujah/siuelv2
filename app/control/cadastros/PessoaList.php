@@ -1,4 +1,7 @@
 <?php
+
+use Adianti\Control\TAction;
+use Adianti\Widget\Datagrid\TPageNavigation;
 /**
  * Classe que representa a listagem de Pessoas
  * PessoaList Listing
@@ -40,8 +43,8 @@ class PessoaList extends TPage{
         
         $status = new TCombo('status');
         $status->addItems([
-            'ativo' => 'Ativo',
-            'inativo' => 'Inativo'
+            '1' => 'Ativo',
+            '2' => 'Inativo'
         ]);
 
         // Grid de campos
@@ -150,6 +153,11 @@ class PessoaList extends TPage{
         $panel->addHeaderWidget($input_busca);
         $panel->add($this->datagrid);
 
+        $this->pageNavigation = new TPageNavigation;
+        $this->pageNavigation->setAction( new TAction([$this, 'onReload']) );
+        
+        $panel->addFooter( $this->pageNavigation );
+
         /**
          * Pilha de container
          */
@@ -166,12 +174,12 @@ class PessoaList extends TPage{
         TSession::setValue('pessoa_filter_data', $data);
 
         $this->form->setData($data);
-        $this->onReload($data);
+        $this->onReload();
     }
 
     public function onClear(){
         TSession::setValue('pessoa_filter_data', null);
-        $this->form->clear();
+        $this->form->clear(TRUE);
         $this->onReload();
     }
 
@@ -205,6 +213,13 @@ class PessoaList extends TPage{
     }
     
     public function onReload($param = null){
+
+        $limit = 20;
+        $offset = 0;
+        if( is_array($param) ){
+            $offset = $param['offset'] ?? 0;
+
+        }
         
         try{
             TTransaction::open('siuel_negocio');
@@ -231,7 +246,14 @@ class PessoaList extends TPage{
                 $criteria->add( new TFilter('status', '=', $data->status) );
             }
 
-            $repo = new TRepository('Pessoa');
+            $criteria->setProperty( 'limit', $limit );
+            
+            $criteria->setProperty( 'offset', $offset );
+            $criteria->setProperty( 'order', 'nome' );
+            $criteria->setProperty( 'direction', 'asc' );
+
+
+            $repo = new TRepository( 'Pessoa' );
             $pessoas = $repo->load($criteria);
 
             if( $pessoas ){
@@ -239,6 +261,14 @@ class PessoaList extends TPage{
                     $this->datagrid->addItem($pessoa);
                 }
             }
+
+            $countCriteria = clone $criteria;
+            $countCriteria->resetProperties();
+            $count = $repo->count( $countCriteria );
+
+            $this->pageNavigation->setCount( $count );
+            $this->pageNavigation->setProperties( $param );
+            $this->pageNavigation->setLimit( $limit );
 
             TTransaction::close();
 
@@ -254,7 +284,7 @@ class PessoaList extends TPage{
     public function show(){
         if( !$this->loaded ){
             $this->onReload();
-            $this->loaded = true;
+            $this->loaded = TRUE;
         }
 
         parent::show();

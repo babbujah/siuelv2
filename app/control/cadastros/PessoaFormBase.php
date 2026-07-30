@@ -66,15 +66,15 @@ abstract class PessoaFormBase extends TPage{
         $tipoPessoa->addItems([
             'escotista' => 'Escotista',
             'jovem' => 'Jovem',
-            'reponsavel' => 'Responsável',
+            'responsavel' => 'Responsável',
             'outro' => 'Outro'
         ]);
 
         $status = new TCombo('status');
         $status->setSize('100%');
         $status->addItems([
-            '1' => 'Ativo',
-            '2' => 'Inativo'
+            1 => 'Ativo',
+            2 => 'Inativo'
         ]);
         $status->setValue('1');
 
