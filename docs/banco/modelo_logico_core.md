@@ -2,7 +2,7 @@
 
 pessoa_id
 
-syste_user_id
+system_user_id
 
 nome
 nome_social
@@ -21,7 +21,7 @@ tipo_pessoa
 status
 
 data_criacao
-data_modificao
+data_modificacao
 
 Obs.: Ajustar futuramente para não ter mais tipo_pessoa. Deixar essa responsabilidade com Vínculo
 
@@ -37,14 +37,21 @@ parentesco
 
 responsavel_principal
 
-recebe_cominicado
+recebe_comunicado
 
 permite_saida
 
 ### Unidade Escoteira
 
 unidade_escoteira_id
+
+grupo_id
+
+ramo_id
+
 nome
+
+status
 
 ### Ramo
 
@@ -178,11 +185,3 @@ Implementação delegada ao Adianti Framework
 Equivalência prevista:
 
 system_program
-
-### UsuarioPerfil
-
-usuario_perfil_id
-
-usuario_id
-
-perfil_id

@@ -26,11 +26,12 @@ Pode ser:
 
 A pessoa possuirá um único cadastro, independentemente de quantas funções exerça.
 
-## Responsável
+## PessoaResponsável
 
 Representa uma pessoa responsável legal por um ou mais membros juvenis.
 Um responsável pode estar vinculado a diversos membros juvenis.
 Um membro juvenil pode possuir mais de um responsável
+Reponsável é representado por uma Pessoa e sua vinculação ocorre através da entidade PessoaResponsavel.
 
 Exemplos:
 
