@@ -88,6 +88,9 @@ status
 cargo_id
 
 nome
+
+categoria
+
 descricao
 
 area
@@ -95,6 +98,25 @@ area
 nivel_permissao
 
 status
+
+Exemplo nome:
+
+- Chefe de Seção
+- Assistente de Seção
+- Diretor Presidente
+- Diretor Financeiro
+- Diretor Administrativo
+- Diretor de Métodos Educativos
+- Comissão Fiscal
+- Técnico de Informática
+
+Exemplo categoria:
+
+- Escotista
+- Diretoria
+- Técnico
+- Fiscal
+- Apoio
 
 Exemplo área:
 

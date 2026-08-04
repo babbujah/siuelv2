@@ -182,6 +182,7 @@ cargo
 ### Campos
 - cargo_id BIGINT UNSIGNED NOT NULL
 - nome VARCHAR(100) NOT NULL
+- categoria VARCHAR(50)
 - descricao TEXT NULL
 - area VARCHAR(50) NULL
 - nivel_permissao VARCHAR(50) NULL

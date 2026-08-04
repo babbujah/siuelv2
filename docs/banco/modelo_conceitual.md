@@ -87,16 +87,75 @@ O Clã Pioneiro é tratado como uma equipe única, pois o Ramo Pioneiro não uti
 
 ## Cargo
 
-Representa uma função exercida por uma pessoa dentro da estrutura organizacional.
+Representa uma função exercida por uma pessoa dentro da estrutura organizacional do Grupo Escoteiro.
+
+Os cargos podem estar vinculados à aplicação do Programa Educativo, à gestão administrativa, ao apoio técnico ou a outras estruturas de governança da organização.
+
+Os cargos podem ser agrupados em categorias organizacionais.
+
+### Escotistas
+
+São os adultos responsáveis pela aplicação direta do Programa Educativo junto aos membros juvenis.
 
 Exemplos:
 
 - Chefe de Seção
-- Escotista
-- Diretor
-- Assistente
+- Assistente de Seção
 
-Um cargo determina responsabilidades e permissões dentro do sistema.
+Observação:
+
+"Escotista" é considerado uma categoria de atuação e não necessariamente um cargo específico.
+
+### Diretoria
+
+São os adultos responsáveis pela gestão administrativa e estratégica do Grupo Escoteiro.
+
+Exemplos:
+
+- Diretor Presidente
+- Diretor Administrativo
+- Diretor Financeiro
+- Diretor de Métodos Educativos
+
+Observação:
+
+O Diretor de Métodos Educativos é responsável por orientar a aplicação do Método Escoteiro, apoiar a formação de adultos, acompanhar o desenvolvimento educativo dos ramos e colaborar na organização das atividades e eventos educativos.
+
+### Técnicos
+
+São pessoas que contribuem com conhecimentos especializados para apoiar o funcionamento do Grupo Escoteiro.
+
+Podem ser membros do grupo ou colaboradores externos.
+
+Exemplos:
+
+- Técnico de Informática
+- Técnico de Patrimônio
+- Técnico Administrativo
+- Instrutor Especializado
+
+### Fiscalização
+
+Representa estruturas de controle e fiscalização previstas na organização do Grupo Escoteiro.
+
+Exemplos:
+
+- Comissão Fiscal
+
+### Apoio
+
+Representa funções de apoio que podem ser criadas conforme a necessidade local do Grupo Escoteiro.
+
+Exemplos:
+
+- Coordenador de Patrimônio
+- Coordenador de Eventos
+- Coordenador de Comunicação
+- Secretário de Grupo
+
+Observação:
+
+O sistema deve permitir a criação de novos cargos sem necessidade de alteração estrutural no banco de dados.
 
 # Vínculo
 
