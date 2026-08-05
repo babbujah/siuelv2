@@ -14,21 +14,26 @@ Sistema de gestão escoteira destinado ao apoio das atividades administrativas, 
 
 ## Módulos
 
-### Core
+#### Core
+
 - Pessoas
 - Estrutura Escoteira
-- Permissões
+- Vínculos
 
-### Operações
+#### Operações
+
 - Patrimônio
 - Eventos
+- Gestão de Recursos
 
 ### Programa Educativo
+
 - Progressão
 - Especialidades
 - Formação de adultos
 
 ### Administrativo
+
 - Financeiro
 - Relatórios
 

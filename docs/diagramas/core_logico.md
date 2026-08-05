@@ -9,12 +9,29 @@ class Pessoa {
     cpf
     data_nascimento
     genero
-    email
-    telefone_principal
     tipo_pessoa
     status
     data_criacao
     data_modificacao
+}
+
+class Contato {
+    contato_id
+    pessoa_id
+    telefone1
+    telefone2
+    email
+}
+
+class Endereco {
+    endereco_id
+    pessoa_id
+    logradouro
+    numero
+    bairro
+    complemento
+    cidade
+    cep
 }
 
 class PessoaResponsavel {
@@ -54,7 +71,7 @@ class Ramo {
 
 class Equipe {
     equipe_id
-    ramo_id
+    unidade_escoteira_id
     nome
     tipo
     cor
@@ -66,6 +83,8 @@ class Cargo {
     nome
     descricao
     area
+    categoria
+    nivel_permissao
     status
 }
 
@@ -84,10 +103,12 @@ class Vinculo {
 GrupoEscoteiro "1" --> "0..*" Ramo : possui
 
 Ramo "1" --> "0..*" Equipe : possui
+
+Pessoa "1" --> "0..1" Contato : possui
+
+Pessoa "1" --> "0..1" Endereco : possui
  
 Pessoa "1" --> "0..*" Vinculo : possui
- 
-Pessoa "1" --> "0..1" Usuario : possui
  
 Pessoa "1" --> "0..*" PessoaResponsavel : membro_juvenil
  
@@ -96,4 +117,5 @@ Pessoa "1" --> "0..*" PessoaResponsavel : responsavel
 Vinculo --> "1" Ramo : pertence
 Vinculo --> "0..1" Equipe : participa
 Vinculo --> "0..1" Cargo : exerce
- 
+
+Pessoa ||--o| Contato Pessoa ||--o| Endereco

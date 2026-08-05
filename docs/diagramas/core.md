@@ -1,21 +1,32 @@
-# Diagrama Concentual do Core
+## Diagrama Conceitual do Core
 
-```mermaid
+mermaid
 classDiagram
 
 class Pessoa
-class Responsavel
-class Vinculo
+class Contato
+class Endereco
+class PessoaResponsavel
+class GrupoEscoteiro
+class UnidadeEscoteira
 class Ramo
 class Equipe
 class Cargo
+class Vinculo
 
-Pessoa "1" --> "0..*" Vinculo : possui
+Pessoa --> Contato
+Pessoa --> Endereco
 
-Vinculo --> "1" Ramo : pertence
-Vinculo --> "0..1" Equipe : participa
-Vinculo --> "0..*" Cargo : exerce
+Pessoa --> PessoaResponsavel
 
-Pessoa "1" --> "0..*" Responsavel : possui
-Responsavel "1" --> "0..*" Pessoa : responsavel_por
+GrupoEscoteiro --> UnidadeEscoteira
 
+Ramo --> UnidadeEscoteira
+
+UnidadeEscoteira --> Equipe
+
+Pessoa --> Vinculo
+
+Cargo --> Vinculo
+Equipe --> Vinculo
+Ramo --> Vinculo

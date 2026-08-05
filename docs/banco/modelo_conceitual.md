@@ -26,6 +26,17 @@ Pode ser:
 
 A pessoa possuirá um único cadastro, independentemente de quantas funções exerça.
 
+### Estruturas relacionadas
+
+Para facilitar a organização das informações, os dados da pessoa poderão ser distribuídos em estruturas complementares.
+
+Exemplos:
+
+- Contato
+- Endereço
+
+Isso permite a separação entre dados pessoais, dados de comunicação e dados de localização.
+
 ## PessoaResponsável
 
 Representa uma pessoa responsável legal por um ou mais membros juvenis.

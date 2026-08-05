@@ -6,7 +6,7 @@ pessoa
 ### Chave Primária
 - pessoa_id BIGINT PK
 
-### Chave Estrangeira
+### Chave Estrangeira - Futuro
 - system_user_id -> system_user.id
 
 ### Campos
@@ -18,11 +18,57 @@ pessoa
 - rg VARCHAR(30) NULL
 - data_nascimento DATE NULL
 - genero VARCHAR(20) NULL
-- email VARCHAR(150) NULL
-- telefone_principal VARCHAR(20) NULL
 - status CHAR(1)
 - data_criacao TIMESTAMP
 - data_modificacao TIMESTAMP
+
+## Contato
+
+### Tabela
+contato
+
+### Chave Primária
+- contato_id
+
+### Chave Estrangeira
+- pessoa_id → pessoa.pessoa_id
+
+### Campos
+- contato_id INT NOT NULL AUTO_INCREMENT
+- pessoa_id INT NULL
+- telefone1 VARCHAR(20) NULL
+- telefone2 VARCHAR(20) NULL
+- email VARCHAR(150) NULL
+
+### Regras
+- Uma pessoa pode possuir um conjunto de contatos.
+- O vínculo é realizado através de pessoa_id.
+
+## Endereco
+
+### Tabela
+endereco
+
+### Chave Primária
+- endereco_id
+
+### Chave Estrangeira
+- pessoa_id → pessoa.pessoa_id
+
+### Campos
+- endereco_id INT NOT NULL AUTO_INCREMENT
+- pessoa_id INT NULL
+- logradouro VARCHAR(255)
+- numero VARCHAR(20)
+- bairro VARCHAR(100)
+- complemento VARCHAR(150)
+- cidade VARCHAR(100)
+- cep VARCHAR(10)
+- data_criacao DATETIME
+- data_modificacao DATETIME
+
+### Regras
+- Uma pessoa pode possuir um endereço vinculado.
 
 ## PessoaResponsavel
 

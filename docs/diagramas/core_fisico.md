@@ -12,11 +12,28 @@ erDiagram
         VARCHAR rg
         DATE data_nascimento
         VARCHAR genero
-        VARCHAR email
-        VARCHAR telefone_principal
         CHAR status
         TIMESTAMP data_criacao
         TIMESTAMP data_modificacao
+    }
+
+    CONTATO {
+        INT contato_id PK
+        INT pessoa_id FK
+        VARCHAR telefone1
+        VARCHAR telefone2
+        VARCHAR email 
+    }
+    
+    ENDERECO {
+        INT endereco_id PK
+        INT pessoa_id FK
+        VARCHAR logradouro
+        VARCHAR numero
+        VARCHAR bairro
+        VARCHAR complemento
+        VARCHAR cidade
+        VARCHAR cep
     }
 
     PESSOA_RESPONSAVEL {
@@ -75,6 +92,7 @@ erDiagram
         VARCHAR nome
         TEXT descricao
         VARCHAR area
+        VARCHAR categoria
         VARCHAR nivel_permissao
         CHAR status
     }
@@ -103,6 +121,9 @@ erDiagram
 
     PESSOA ||--o{ PESSOA_RESPONSAVEL : "membro juvenil"
     PESSOA ||--o{ PESSOA_RESPONSAVEL : "responsavel"
+    PESSOA ||--o| CONTATO : possui
+    PESSOA ||--o| ENDERECO : possui
+    PESSOA ||--o{ VINCULO : "possui"
 
     GRUPO_ESCOTEIRO ||--o{ UNIDADE_ESCOTEIRA : "possui"
 
@@ -110,7 +131,7 @@ erDiagram
 
     UNIDADE_ESCOTEIRA ||--o{ EQUIPE : "possui"
 
-    PESSOA ||--o{ VINCULO : "possui"
+    
 
     GRUPO_ESCOTEIRO ||--o{ VINCULO : "contexto"
 
@@ -121,4 +142,5 @@ erDiagram
     EQUIPE ||--o{ VINCULO : "equipe"
 
     CARGO ||--o{ VINCULO : "cargo"
-```
+
+    

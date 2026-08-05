@@ -1,29 +1,52 @@
-### Pessoa
+#### Pessoa
 
 pessoa_id
 
-system_user_id
-
 nome
-nome_social
-foto
-rg
 cpf
-data_nascimento
-genero
-nacionalidade
-observacoes
 
-email
-telefone_principal
+data_nascimento
+
+genero
 
 tipo_pessoa
+
 status
 
 data_criacao
 data_modificacao
 
 Obs.: Ajustar futuramente para não ter mais tipo_pessoa. Deixar essa responsabilidade com Vínculo
+
+#### Contato
+
+contato_id
+
+pessoa_id
+
+telefone1
+telefone2
+
+email
+
+#### Endereco
+
+endereco_id
+
+pessoa_id
+
+logradouro
+numero
+
+bairro
+complemento
+
+cidade
+
+cep
+
+data_criacao
+data_modificacao
 
 ### PessoaResponsavel
 
@@ -52,6 +75,8 @@ ramo_id
 nome
 
 status
+
+descricao
 
 ### Ramo
 
@@ -128,6 +153,8 @@ Exemplo área:
 ### Vínculo
 
 grupo_id
+
+unidade_escoteira_id
 
 usuario_responsavel
 
