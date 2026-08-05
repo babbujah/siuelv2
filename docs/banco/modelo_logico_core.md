@@ -156,7 +156,7 @@ grupo_id
 
 unidade_escoteira_id
 
-usuario_responsavel
+usuario_responsavel_id
 
 vinculo_id
 
@@ -176,6 +176,9 @@ status
 motivo_encerramento
 
 observacao
+
+data_criacao
+data_modificacao
 
 Exemplo:
 
