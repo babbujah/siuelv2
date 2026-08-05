@@ -268,3 +268,72 @@ CREATE TABLE pessoa_responsavel (
         FOREIGN KEY (responsavel_id)
         REFERENCES pessoa(pessoa_id)
 );
+
+-- =================================================
+-- VINCULO
+-- =================================================
+
+CREATE TABLE vinculo (
+    vinculo_id BIGINT NOT NULL AUTO_INCREMENT,
+
+    pessoa_id INT NOT NULL,
+
+    grupo_id BIGINT NOT NULL,
+
+    ramo_id BIGINT NULL,
+
+    unidade_escoteira_id BIGINT NULL,
+
+    equipe_id BIGINT NULL,
+
+    cargo_id BIGINT NULL,
+
+    usuario_responsavel_id INT NULL,
+
+    data_inicio DATE NOT NULL,
+
+    data_fim DATE NULL,
+
+    status CHAR(1) NOT NULL DEFAULT '1',
+
+    motivo_encerramento VARCHAR(100) NULL,
+
+    observacao TEXT NULL,
+
+    data_criacao DATETIME NULL,
+
+    data_modificacao DATETIME NULL,
+
+    PRIMARY KEY (vinculo_id),
+
+    INDEX idx_vinculo_pessoa (pessoa_id),
+    INDEX idx_vinculo_grupo (grupo_id),
+    INDEX idx_vinculo_ramo (ramo_id),
+    INDEX idx_vinculo_unidade (unidade_escoteira_id),
+    INDEX idx_vinculo_equipe (equipe_id),
+    INDEX idx_vinculo_cargo (cargo_id),
+
+    CONSTRAINT fk_vinculo_pessoa
+        FOREIGN KEY (pessoa_id)
+        REFERENCES pessoa(pessoa_id),
+
+    CONSTRAINT fk_vinculo_grupo
+        FOREIGN KEY (grupo_id)
+        REFERENCES grupo_escoteiro(grupo_id),
+
+    CONSTRAINT fk_vinculo_ramo
+        FOREIGN KEY (ramo_id)
+        REFERENCES ramo(ramo_id),
+
+    CONSTRAINT fk_vinculo_unidade
+        FOREIGN KEY (unidade_escoteira_id)
+        REFERENCES unidade_escoteira(unidade_escoteira_id),
+
+    CONSTRAINT fk_vinculo_equipe
+        FOREIGN KEY (equipe_id)
+        REFERENCES equipe(equipe_id),
+
+    CONSTRAINT fk_vinculo_cargo
+        FOREIGN KEY (cargo_id)
+        REFERENCES cargo(cargo_id)
+);
