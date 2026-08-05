@@ -147,3 +147,124 @@ CREATE TABLE equipe (
         FOREIGN KEY (unidade_escoteira_id)
         REFERENCES unidade_escoteira(unidade_escoteira_id)
 );
+
+-- =================================================
+-- PESSOA
+-- =================================================
+
+CREATE TABLE pessoa (
+    pessoa_id INT NOT NULL AUTO_INCREMENT,
+
+    nome VARCHAR(150) NOT NULL,
+
+    cpf VARCHAR(11) NULL,
+
+    data_nascimento DATE NOT NULL,
+
+    genero CHAR(1) NULL,
+
+    tipo_pessoa VARCHAR(30) NULL,
+
+    status VARCHAR(20) DEFAULT '1',
+
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    data_modificacao DATETIME NULL,
+
+    PRIMARY KEY (pessoa_id)
+);
+
+-- =================================================
+-- CONTATO
+-- =================================================
+
+CREATE TABLE contato (
+    contato_id INT NOT NULL AUTO_INCREMENT,
+
+    pessoa_id INT NULL,
+
+    telefone1 VARCHAR(20) NULL,
+    telefone2 VARCHAR(20) NULL,
+
+    email VARCHAR(150) NULL,
+
+    PRIMARY KEY (contato_id),
+
+    KEY fk_contato_pessoa (pessoa_id),
+
+    CONSTRAINT fk_contato_pessoa
+        FOREIGN KEY (pessoa_id)
+        REFERENCES pessoa (pessoa_id)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
+);
+
+-- =================================================
+-- ENDERECO
+-- =================================================
+
+CREATE TABLE endereco (
+    endereco_id INT NOT NULL AUTO_INCREMENT,
+
+    pessoa_id INT NULL,
+
+    logradouro VARCHAR(255) NULL,
+    numero VARCHAR(20) NULL,
+    bairro VARCHAR(100) NULL,
+    complemento VARCHAR(150) NULL,
+    cidade VARCHAR(100) NULL,
+    cep VARCHAR(10) NULL,
+
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_modificacao DATETIME NULL,
+
+    PRIMARY KEY (endereco_id),
+
+    KEY fk_endereco_pessoa (pessoa_id),
+
+    CONSTRAINT fk_endereco_pessoa
+        FOREIGN KEY (pessoa_id)
+        REFERENCES pessoa (pessoa_id)
+);
+
+-- =================================================
+-- PESSOA RESPONSAVEL
+-- =================================================
+
+CREATE TABLE pessoa_responsavel (
+    pessoa_responsavel_id BIGINT NOT NULL AUTO_INCREMENT,
+
+    membro_juvenil_id INT NOT NULL,
+    responsavel_id INT NOT NULL,
+
+    parentesco VARCHAR(50) NULL,
+
+    responsavel_principal BOOLEAN NOT NULL DEFAULT FALSE,
+
+    recebe_comunicado BOOLEAN NOT NULL DEFAULT TRUE,
+
+    permite_saida BOOLEAN NOT NULL DEFAULT FALSE,
+
+    status CHAR(1) NOT NULL DEFAULT '1',
+
+    data_criacao DATETIME NULL,
+    data_modificacao DATETIME NULL,
+
+    PRIMARY KEY (pessoa_responsavel_id),
+
+    INDEX idx_pr_membro (
+        membro_juvenil_id
+    ),
+
+    INDEX idx_pr_responsavel (
+        responsavel_id
+    ),
+
+    CONSTRAINT fk_pr_membro
+        FOREIGN KEY (membro_juvenil_id)
+        REFERENCES pessoa(pessoa_id),
+
+    CONSTRAINT fk_pr_responsavel
+        FOREIGN KEY (responsavel_id)
+        REFERENCES pessoa(pessoa_id)
+);
