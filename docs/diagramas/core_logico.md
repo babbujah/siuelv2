@@ -1,4 +1,4 @@
-# Diagrama Lógico do Core
+## Diagrama Lógico do Core
 
 ```mermaid
 classDiagram
@@ -11,8 +11,6 @@ class Pessoa {
     genero
     tipo_pessoa
     status
-    data_criacao
-    data_modificacao
 }
 
 class Contato {
@@ -36,19 +34,24 @@ class Endereco {
 
 class PessoaResponsavel {
     pessoa_responsavel_id
-    pessoa_id
+    membro_juvenil_id
     responsavel_id
     parentesco
     responsavel_principal
+    recebe_comunicado
+    permite_saida
 }
 
 class GrupoEscoteiro {
     grupo_id
     numero
     nome
-    cidade
-    uf
-    status
+}
+
+class Ramo {
+    ramo_id
+    nome
+    sigla
 }
 
 class UnidadeEscoteira {
@@ -56,17 +59,6 @@ class UnidadeEscoteira {
     grupo_id
     ramo_id
     nome
-    status
-}
-
-class Ramo {
-    ramo_id
-    nome
-    sigla
-    idade_minima
-    idade_maxima
-    cor
-    status
 }
 
 class Equipe {
@@ -74,48 +66,51 @@ class Equipe {
     unidade_escoteira_id
     nome
     tipo
-    cor
-    status
 }
 
 class Cargo {
     cargo_id
     nome
-    descricao
-    area
     categoria
+    area
     nivel_permissao
-    status
 }
 
 class Vinculo {
     vinculo_id
     pessoa_id
+    grupo_id
     ramo_id
+    unidade_escoteira_id
     equipe_id
     cargo_id
     data_inicio
     data_fim
     status
-    observacao
 }
-
-GrupoEscoteiro "1" --> "0..*" Ramo : possui
-
-Ramo "1" --> "0..*" Equipe : possui
 
 Pessoa "1" --> "0..1" Contato : possui
 
 Pessoa "1" --> "0..1" Endereco : possui
- 
-Pessoa "1" --> "0..*" Vinculo : possui
- 
-Pessoa "1" --> "0..*" PessoaResponsavel : membro_juvenil
- 
+
+Pessoa "1" --> "0..*" PessoaResponsavel : membro
+
 Pessoa "1" --> "0..*" PessoaResponsavel : responsavel
 
-Vinculo --> "1" Ramo : pertence
-Vinculo --> "0..1" Equipe : participa
-Vinculo --> "0..1" Cargo : exerce
+GrupoEscoteiro "1" --> "0..*" UnidadeEscoteira : possui
 
-Pessoa ||--o| Contato Pessoa ||--o| Endereco
+Ramo "1" --> "0..*" UnidadeEscoteira : organiza
+
+UnidadeEscoteira "1" --> "0..*" Equipe : possui
+
+Pessoa "1" --> "0..*" Vinculo : possui
+
+Vinculo --> GrupoEscoteiro
+
+Vinculo --> Ramo
+
+Vinculo --> UnidadeEscoteira
+
+Vinculo --> Equipe
+
+Vinculo --> Cargo
