@@ -1,6 +1,6 @@
-## Diagrama Conceitual do Core
+# Diagrama Conceitual do Core
 
-mermaid
+```mermaid
 classDiagram
 
 class Pessoa
@@ -30,3 +30,5 @@ Pessoa --> Vinculo
 Cargo --> Vinculo
 Equipe --> Vinculo
 Ramo --> Vinculo
+```
+`
