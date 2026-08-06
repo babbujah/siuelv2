@@ -1,6 +1,12 @@
 # Core V1
 
-## Tabelas implementadas
+## Status
+
+Concluído
+
+Data: 06/08/2026
+
+## Estruturas Implementadas
 
 - pessoa
 - contato
@@ -13,8 +19,32 @@
 - pessoa_responsavel
 - vinculo
 
-## Status
+## Objetivo
 
-Concluído
+Fornecer infraestrutura básica para todos os módulos do SIUEL V2.
 
-Data: 05/08/2026
+## Validações Realizadas
+
+### Jovem
+
+Pessoa → Ramo → Unidade → Equipe
+
+### Escotista
+
+Pessoa → Cargo → Unidade
+
+### Diretor
+
+Pessoa → Cargo → Grupo Escoteiro
+
+### Técnico
+
+Pessoa → Cargo → Grupo Escoteiro
+
+## Resultado
+
+Core V1 validado e pronto para implementação da camada de aplicação.
+
+## Próxima Fase
+
+Implementação dos Models e CRUDs do Core.
