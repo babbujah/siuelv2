@@ -111,6 +111,10 @@
                 <icon>fa:user fa-fw</icon>
                 <action>PessoaForm</action>
             </menuitem>
+            <menuitem label='Ramo'>
+                <icon>fa:thin fa-trillium</icon>
+                <action>RamoList</action>
+            </menuitem>
             <!--<menuitem label='Common page 2'>
                 <icon></icon>
                 <action>CommonPage</action>
